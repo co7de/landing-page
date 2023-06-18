@@ -1,3 +1,4 @@
+
 // Load environment variables from .env file
 require('dotenv').config();
 // Import required modules
@@ -155,33 +156,25 @@ const PORT = process.env.PORT || 3000;
 // This code sets up the necessary schemas and models for a MongoDB database using Mongoose
 // to interact with the database and perform CRUD operations on the defined collections.
 mongoose.set('strictQuery', false);
-//
-// const connectDB = async () => {
-//     try {
-//         const conn = await mongoose.connect(process.env.MONGO_URI);
-//         console.log(`MongoDB Connected ${conn.connection.host} `);
-//     } catch (err) {
-//         console.log(err);
-//         process.exit(1);
-//     }
-// };
-// const connectDB = async () => {
-//     mongoose.connect("mongodb://127.0.0.1:27017/landingPageDB", {useNewUrlParser: true, useUnifiedTopology: true})
-//         .then(() => {
-//             console.log('Connected to MongoDB');
-//         })
-//         .catch((err) => {
-//             console.error('Error connecting to MongoDB', err);
-//         });
-// };
 
-mongoose.connect("mongodb://127.0.0.1:27017/landingPageDB", {useNewUrlParser: true, useUnifiedTopology: true})
-    .then(() => {
-        console.log('Connected to MongoDB');
-    })
-    .catch((err) => {
-        console.error('Error connecting to MongoDB', err);
-    });
+const connectDB = async () => {
+    try {
+        const conn = await mongoose.connect(process.env.MONGO_URI);
+        console.log(`MongoDB Connected ${conn.connection.host} `);
+    } catch (err) {
+        console.log(err);
+        process.exit(1);
+    }
+};
+
+
+// mongoose.connect("mongodb://127.0.0.1:27017/landingPageDB", {useNewUrlParser: true, useUnifiedTopology: true})
+//     .then(() => {
+//         console.log('Connected to MongoDB');
+//     })
+//     .catch((err) => {
+//         console.error('Error connecting to MongoDB', err);
+//     });
 
 
 const eventEmitter = new EventEmitter();
@@ -3872,7 +3865,12 @@ app.post('/patients/:id/lastvisit', async (req, res) => {
 
 
 //The app.listen() function is used to start the server and make it listen on a specific port for incoming HTTP requests.
-// connectDB()
-app.listen(3000, function () {
-    console.log("Server started on port 3000");
-});
+// app.listen(3000, function () {
+//     console.log("Server started on port 3000");
+// });
+
+connectDB().then(() => {
+    app.listen(PORT, function () {
+        console.log(`Server started on port ${PORT}`);
+    })
+})
