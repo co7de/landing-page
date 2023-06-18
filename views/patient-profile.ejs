@@ -1,0 +1,1635 @@
+<%- include("partials/header"); -%>
+
+
+<!-- start: page toolbar -->
+<div class="page-toolbar px-xl-4 px-sm-2 px-0 py-3">
+    <div class="container-fluid">
+        <div class="row g-3 mb-3 align-items-center">
+            <div class="col">
+                <ol class="breadcrumb bg-transparent mb-0">
+                    <li class="breadcrumb-item"><a class="text-secondary" href="/"><%= translation.home %></a></li>
+                    <li class="breadcrumb-item"><%= translation.patient %></li>
+                    <li class="breadcrumb-item active" aria-current="page"><%= translation.profile %></li>
+                </ol>
+            </div>
+        </div> <!-- .row end -->
+        <div class="row align-items-center">
+            <div class="col-auto">
+                <h1 class="fs-5 color-900 mt-1 mb-0"><%= translation.welcome_back_dr %> <%= locals.doctor ? locals.doctor.fName : '' %>
+                    !</h1>
+                <small class="text-muted"></small>
+            </div>
+
+        </div> <!-- .row end -->
+    </div>
+</div>
+
+
+<!-- start: page body -->
+<div class="page-body px-xl-4 px-sm-2 px-0 py-lg-2 py-1 mt-0 mt-lg-3">
+    <div class="container-fluid">
+        <div class="row g-3">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center flex-column flex-md-row">
+                            <img src="/assets/img/<%= patient.gender %>.png" alt="" class="rounded"
+                                 style="width: 210px;">
+                            <div class="ms-md-5 m-0 mt-4 mt-md-0 text-md-start text-center">
+                                <h5 class="fw-bold"><%= patient ? patient.fName : '' %> <%= patient ? patient.lName : '' %>
+                                    <span
+                                            class="text-danger"><%= translation.remaining %> $<%= lastInvoice ? lastInvoice.due : '' %></span></h5>
+                                <p><strong><%= translation.address %>:</strong> <%= patient ? patient.adress : '' %></p>
+                                <div class="d-flex justify-content-center align-items-center mb-3 mt-2">
+                                    <div class="me-3 me-md-5">
+                                        <small class="text-muted"><%= translation.id %></small>
+                                        <div class="mb-0 fw-bold"><%= patient ? patient.idNumber : '' %></div>
+                                    </div>
+                                    <div class="me-3 me-md-5">
+                                        <small class="text-muted"><%= translation.tel %></small>
+                                        <div class="mb-0 fw-bold"><%= patient ? patient.tel : '' %></div>
+                                    </div>
+                                    <div class="me-3 me-md-5">
+                                        <small class="text-muted"><%= translation.email %></small>
+                                        <div class="mb-0 fw-bold"><%= patient ? patient.email : '' %></div>
+                                    </div>
+                                </div>
+                                <ul class="list-unstyled">
+                                    <li class="mb-3">
+                                        <div class="small"><%= translation.blood_pressure %></div>
+                                        <div class="progress" style="height: 1px;">
+                                            <div class="progress-bar bg-success" role="progressbar" aria-valuenow="40"
+                                                 aria-valuemin="0" aria-valuemax="100" style="width: 40%"><span
+                                                        class="sr-only">40% Complete (success)</span></div>
+                                        </div>
+                                    </li>
+                                    <li class="mb-3">
+                                        <div class="small"><%= translation.heart_beat %></div>
+                                        <div class="progress" style="height: 1px;">
+                                            <div class="progress-bar bg-info" role="progressbar" aria-valuenow="20"
+                                                 aria-valuemin="0" aria-valuemax="100" style="width: 20%"><span
+                                                        class="sr-only">20% Complete</span></div>
+                                        </div>
+                                    </li>
+                                    <li class="mb-3">
+                                        <div class="small"><%= translation.haemoglobin %></div>
+                                        <div class="progress" style="height: 1px;">
+                                            <div class="progress-bar bg-warning" role="progressbar" aria-valuenow="60"
+                                                 aria-valuemin="0" aria-valuemax="100" style="width: 60%"><span
+                                                        class="sr-only">60% Complete (warning)</span></div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="small"><%= translation.sugar %></div>
+                                        <div class="progress" style="height: 1px;">
+                                            <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="80"
+                                                 aria-valuemin="0" aria-valuemax="100" style="width: 80%"><span
+                                                        class="sr-only">80% Complete (danger)</span></div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="card">
+                                <div style=" display: flex; flex-direction: row; align-items: center; justify-content: space-between"
+                                     class="card-body">
+                                    <div>
+                                        <div>
+                                            <p> <%= translation.delete %> <%= patient.fName %> <%= patient.lName %></p>
+                                        </div>
+                                        <button id="<%= patient._id %>_deleteBtn" type="button"
+                                                class="btn btn-sm color-400 btn-outline-danger"
+                                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                                aria-label="Delete" data-bs-original-title="Delete"
+                                                data-original-title="" title=""
+                                                onclick="deletePatient('<%= patient.fName %>', '<%= patient._id %>' )">
+                                            <i class="fa fa-trash"></i> <%= translation.delete_patient %>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <form id="add-apnt" action="/book-appointment" method="post">
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <input type="hidden" class="form-control form-control-lg" placeholder="Enter here"
+                                       value="<%= patient ? patient.fName : '' %>" name="fName">
+                                <input type="hidden" class="form-control form-control-lg" placeholder="Enter here"
+                                       value="<%= patient ? patient.lName : '' %>" name="lName">
+                                <input type="hidden" class="form-control form-control-lg" placeholder="Enter here"
+                                       value="<%= patient ? patient.email : '' %>" name="email">
+                                <input type="hidden" class="form-control form-control-lg" placeholder="Enter here"
+                                       value="<%= patient ? patient.gender : '' %>" name="gender">
+                                <input type="hidden" class="form-control form-control-lg" placeholder="Enter here"
+                                       value="<%= patient ? patient.tel : '' %>" name="tel">
+                                <input type="hidden" class="form-control form-control-lg" placeholder="Enter here"
+                                       value="<%= patient ? patient.disease : '' %>" name="service">
+                                <input type="hidden" class="form-control form-control-lg" placeholder="Enter here"
+                                       value="<%= patient ? patient.idNumber : '' %>" name="idNumber">
+                                <div class="col-lg-4 col-md-6">
+                                    <label class="form-label"><%= translation.appointment_date %></label>
+                                    <input id="date" type="date" class="form-control form-control-lg"
+                                           placeholder="<%= translation.enter_here %>" name="date">
+                                </div>
+                                <div class="col-lg-4 col-md-6">
+                                    <label class="form-label"><%= translation.appointment_hour %></label>
+                                    <input id="time" type="text" class="form-control form-control-lg"
+                                           placeholder="<%= translation.enter_here %>" name="time" autocomplete="off"
+                                           disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary"><%= translation.book_appointment %></button>
+                        </div>
+                        <div id="ovLay" class="ovLay">
+                            <div id="popup" class="popup">
+                                <div><span id="close"><i class="fa fa-times"></i></span></div>
+                                <div class="hours">
+                                    <% hoursList.forEach(hour => { %>
+                                        <div class="hour"><%= hour %></div>
+                                    <% }) %>
+                                </div>
+                                <div class="timeslots"></div>
+                            </div>
+                        </div>
+                    </form>
+                </div> <!-- .Card End -->
+            </div>
+
+            <div class="col-12 <% if (!lastInvoice) { %>d-none<% } %>">
+                <div class="card fieldset border border-muted">
+                    <span class="fieldset-tile text-muted bg-body"><%= translation.last_invoice %></span>
+                    <div id="invoice_list_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6"></div>
+                            <div class="col-sm-12 col-md-6"></div>
+                        </div>
+                        <div class="row dt-row">
+                            <div class="col-sm-12">
+                                <div id="invoice_list_wrapper"
+                                     class="dataTables_wrapper dt-bootstrap5 no-footer">
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-6"></div>
+                                        <div class="col-sm-12 col-md-6"></div>
+                                    </div>
+                                    <div class="row dt-row">
+                                        <div class="col-sm-12">
+                                            <table id="invoice_list"
+                                                   class="table card-table align-middle mb-0 nowrap dataTable no-footer dtr-inline"
+                                                   style="width: 1147px;">
+                                                <thead>
+
+                                                <th class="sorting" tabindex="0"
+                                                    aria-controls="invoice_list" rowspan="1" colspan="1"
+                                                    style="width: 83.2px;"
+                                                    aria-label="Invoice: activate to sort column ascending">
+                                                    <%= translation.invoice %>
+                                                </th>
+                                                <th class="sorting" tabindex="0"
+                                                    aria-controls="invoice_list" rowspan="1" colspan="1"
+                                                    style="width: 200.2px;"
+                                                    aria-label="Name: activate to sort column ascending">
+                                                    <%= translation.name %>
+                                                </th>
+                                                <th class="sorting" tabindex="0"
+                                                    aria-controls="invoice_list" rowspan="1" colspan="1"
+                                                    style="width: 108.2px;"
+                                                    aria-label="Total: activate to sort column ascending">
+                                                    <%= translation.total %>
+                                                </th>
+                                                <th class="sorting" tabindex="0"
+                                                    aria-controls="invoice_list" rowspan="1" colspan="1"
+                                                    style="width: 108.2px;"
+                                                    aria-label="Total: activate to sort column ascending">
+                                                    <%= translation.paid %>
+                                                </th>
+                                                <th class="sorting" tabindex="0"
+                                                    aria-controls="invoice_list" rowspan="1" colspan="1"
+                                                    style="width: 108.2px;"
+                                                    aria-label="Total: activate to sort column ascending">
+                                                    <%= translation.remaining %>
+                                                </th>
+                                                <th class="sorting" tabindex="0"
+                                                    aria-controls="invoice_list" rowspan="1" colspan="1"
+                                                    style="width: 107.2px;"
+                                                    aria-label="Date: activate to sort column ascending">
+                                                    <%= translation.date %>
+                                                </th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                <tr class="row-selectable odd">
+                                                    <td><%= lastInvoice ? lastInvoice.invoiceId : '' %></td>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <img src="/assets/img/<%= patient.gender %>.png"
+                                                                 class="rounded-circle sm avatar" alt="">
+                                                            <div class="ms-2 mb-0"><%= patient.fName %> <%= patient.lName %></div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="fw-bold"><%= lastInvoice ? lastInvoice.totalPrice : '' %></td>
+                                                    <td class="fw-bold"><%= lastInvoice ? lastInvoice.amountPaid : '' %></td>
+                                                    <td class="fw-bold"><%= lastInvoice ? lastInvoice.due : '' %></td>
+                                                    <td class="fw-bold"><%= lastInvoice ? lastInvoice.invoiceDate : '' %></td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-5"></div>
+                                        <div class="col-sm-12 col-md-7"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-5"></div>
+                            <div class="col-sm-12 col-md-7"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <!-- Tab: navbar -->
+                        <ul class="nav nav-tabs tab-card border-bottom-0 tab-card px-4" role="tablist">
+                            <li class="nav-item" role="presentation"><a class="nav-link active" data-bs-toggle="tab"
+                                                                        href="#profile-and-history" role="tab"
+                                                                        aria-selected="true"
+                                                                        tabindex="-1"><%= translation.profile %></a>
+                            </li>
+                            <li class="nav-item" role="presentation"><a class="nav-link" data-bs-toggle="tab"
+                                                                        href="#appointments-history" role="tab"
+                                                                        aria-selected="false"
+                                                                        tabindex="-1"><%= translation.appointments_history %></a>
+                            </li>
+                            <li class="nav-item" role="presentation"><a class="nav-link" data-bs-toggle="tab"
+                                                                        href="#Create-Invoice" role="tab"
+                                                                        aria-selected="false"
+                                                                        tabindex="-1"><%= translation.create_invoice %></a>
+                            </li>
+                            <li class="nav-item" role="presentation"><a class="nav-link" data-bs-toggle="tab"
+                                                                        href="#Billings-Patient" role="tab"
+                                                                        aria-selected="false"
+                                                                        tabindex="-1"><%= translation.billings %></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="card tab-content">
+                    <!-- Tab: profile & History -->
+                    <div class="tab-pane fade card-body show active" id="profile-and-history" role="tabpanel">
+                        <div class="mb-4">
+                            <div class="payment-info">
+                                <h3 class="payment-name"><i
+                                            class="fa fa-id-card"></i> <%= translation.profile %></h3>
+                                <br>
+                            </div>
+                        </div>
+                        <div class="container-fluid">
+                            <div class="form-container">
+                                <form action="/patient-profile" id="patientProfileForm" style="" method="post">
+                                    <div class="form-row">
+                                        <div style="padding: 20px " class="row">
+                                            <input type="hidden" name="patientId" value="<%= patient._id %>">
+                                            <div class="form-group col-md-3">
+                                                <!--                        <label ><strong>Last Name</strong></label>-->
+                                                <input type="text" class="form-control" id=""
+                                                       placeholder="<%= translation.id_number %>"
+                                                       name="idNumber"
+                                                       value="<%= patient ? patient.idNumber : '' %>">
+                                            </div>
+                                            <div class="form-group col-md-3">
+                                                <!--                        <label ><strong>First Name</strong></label>-->
+                                                <input type="text" class="form-control" id=""
+                                                       placeholder="<%= translation.first_name %>"
+                                                       name="fName"
+                                                       value="<%= patient ? patient.fName : '' %>">
+                                            </div>
+
+                                            <div class="form-group col-md-3">
+                                                <!--                        <label ><strong>Last Name</strong></label>-->
+                                                <input type="text" class="form-control" id=""
+                                                       placeholder="<%= translation.last_name %>"
+                                                       name="lName"
+                                                       value="<%= patient ? patient.lName : '' %>">
+                                            </div>
+
+                                            <div class="form-group col-md-3">
+                                                <!--                        <label ><strong>Last Name</strong></label>-->
+                                                <input type="text" class="form-control" id=""
+                                                       placeholder="<%= translation.tel %>"
+                                                       name="tel"
+                                                       value="<%= patient ? patient.tel : '' %>">
+                                            </div>
+                                            <div class="form-group col-md-2">
+                                                <!--                        <label for="inputPassword4"><strong>Age</strong></label>-->
+                                                <input type="text" class="form-control" id=""
+                                                       placeholder="<%= translation.age %>"
+                                                       name="age"
+                                                       value="<%= patient ? patient.age : '' %>">
+                                            </div>
+
+
+                                            <div class="form-check col-md-4">
+                                                <strong>
+                                                    <p style="display:inline-block; margin-right: 20px"><%= translation.gender %></p>
+                                                </strong>
+                                                <input class="" type="radio" name="gender" id="male"
+                                                       value="male"
+                                                <% if (patient.gender.toLocaleLowerCase() === 'male'.toLocaleLowerCase()) { %>
+                                                       checked
+                                                        <% } %>
+                                                >
+                                                <label style="margin-right: 20px" class="form-check-label radio-inline"
+                                                       for="male">
+                                                    <%= translation.male %>
+                                                </label>
+                                                <input class="" type="radio" name="gender" id="female"
+                                                       value="female"
+                                                <% if (patient.gender.toLocaleLowerCase() === 'female'.toLocaleLowerCase()) { %>
+                                                       checked
+                                                        <% } %>
+                                                >
+                                                <label class="form-check-label radio-inline" for="female">
+                                                    <%= translation.female %>
+                                                </label>
+                                            </div>
+
+                                            <div class="form-group col-sm-3">
+                                                <div class="input-group">
+                                                    <input type="date" class="form-control" name="dateOfBirth"
+                                                           placeholder="<%= translation.date_of_birth %>"
+                                                           value="<%= patient && patient.dateOfBirth ? patient.dateOfBirth.toISOString().substring(0, 10) : '' %>">
+
+                                                </div>
+                                            </div>
+
+
+                                            <div class="form-group col-md-8">
+                                                <input type="text" class="form-control" id="inputAddress"
+                                                       placeholder="<%= translation.address %>" name="adress"
+                                                       value="<%= patient ? patient.adress : '' %>">
+                                            </div>
+
+
+                                            <div class="form-group col-md-4">
+                                                <input type="email" class="form-control"
+                                                       placeholder="<%= translation.email %>" name="email"
+                                                       value="<%= patient ? patient.email : '' %>">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <button type="submit"
+                                            class="btn btn-primary submit-button"><%= translation.save %></button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="tab-pane fade card-body" id="appointments-history" role="tabpanel">
+                        <div class="col-12">
+                            <!-- invoices: all -->
+                            <div class="card fieldset border border-muted">
+                                <span style="background-color: deepskyblue !important; color: white !important; border-radius: 5px"
+                                      class="fieldset-tile text-muted bg-body"><%= translation.active_appointments %></span>
+                                <div id="invoice_list_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-6"></div>
+                                        <div class="col-sm-12 col-md-6"></div>
+                                    </div>
+                                    <div class="row dt-row">
+                                        <div class="col-sm-12">
+                                            <div id="invoice_list_wrapper"
+                                                 class="dataTables_wrapper dt-bootstrap5 no-footer">
+                                                <div class="row">
+                                                    <div class="col-sm-12 col-md-6"></div>
+                                                    <div class="col-sm-12 col-md-6"></div>
+                                                </div>
+                                                <div class="row dt-row">
+                                                    <div class="col-sm-12">
+                                                        <table id="example3" class="display table table-striped m-b-0">
+                                                            <thead>
+                                                            <tr>
+                                                                <th class="sorting sorting_asc" tabindex="0"
+                                                                    aria-controls="myAllDoctor"
+                                                                    rowspan="1" colspan="1"
+                                                                    style="width: 60px; text-align: center;"
+                                                                    aria-sort="ascending"
+                                                                    aria-label="#: activate to sort column descending"><%= translation.id_number %>
+                                                                </th>
+                                                                <th class="sorting" tabindex="0"
+                                                                    aria-controls="myAllDoctor" rowspan="1"
+                                                                    colspan="1"
+                                                                    style="width: 196.2px; text-align: center;"
+                                                                    aria-label="Doctor: activate to sort column ascending"><%= translation.first_name %>
+                                                                </th>
+                                                                <th class="sorting" tabindex="0"
+                                                                    aria-controls="myAllDoctor" rowspan="1"
+                                                                    colspan="1"
+                                                                    style="width: 139.2px; text-align: center"
+                                                                    aria-label="Specialist: activate to sort column ascending"><%= translation.last_name %>
+                                                                </th>
+                                                                <th class="sorting" tabindex="0"
+                                                                    aria-controls="myAllDoctor" rowspan="1"
+                                                                    colspan="1"
+                                                                    style="width: 123.2px; text-align: center"
+                                                                    aria-label="Schedule: activate to sort column ascending"><%= translation.tel %>
+                                                                </th>
+                                                                <th class="sorting" tabindex="0"
+                                                                    aria-controls="myAllDoctor" rowspan="1"
+                                                                    colspan="1"
+                                                                    style="width: 93.2px; text-align: center"
+                                                                    aria-label="Progress: activate to sort column ascending"><%= translation.disease %>
+                                                                </th>
+                                                                <th class="sorting" tabindex="0"
+                                                                    aria-controls="myAllDoctor" rowspan="1"
+                                                                    colspan="1"
+                                                                    style="width: 106.2px; text-align: center"
+                                                                    aria-label="Date Join: activate to sort column ascending"><%= translation.date %>
+                                                                </th>
+                                                                <th class="sorting" tabindex="0"
+                                                                    aria-controls="myAllDoctor" rowspan="1"
+                                                                    colspan="1"
+                                                                    style="width: 88.2px; text-align: center"
+                                                                    aria-label="Status: activate to sort column ascending"><%= translation.appointment_hour %>
+                                                                </th>
+                                                                <th class="sorting" tabindex="0"
+                                                                    aria-controls="myAllDoctor" rowspan="1"
+                                                                    colspan="1"
+                                                                    style="width: 88.2px; text-align: center"
+                                                                    aria-label="Status: activate to sort column ascending">
+                                                                    <%= translation.action %>
+                                                                </th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            <% Appointments.forEach(function (appointment) { %>
+                                                                <form class="deleteAndUpdateForm"
+                                                                      id="deleteAndUpdate_<%= appointment._id %>"
+                                                                      action="/delete-appointment" method="post"
+                                                                      onsubmit="return deleteButton(this, '<%= appointment.fName %>', '<%= appointment._id %>')">
+                                                                    <tr id="appointment_<%= appointment._id %>">
+
+                                                                        <td style="text-align: center"><%= appointment.idNumber %>
+                                                                            <input
+                                                                                    type='hidden' name='idNumber'
+                                                                                    value='<%= appointment.idNumber %>'>
+                                                                        </td>
+                                                                        <td style="text-align: center"><%= appointment.fName %>
+                                                                            <input
+                                                                                    type='hidden' name='fName'
+                                                                                    value='<%= appointment.fName %>'>
+                                                                        </td>
+                                                                        <td style="text-align: center"><%= appointment.lName %>
+                                                                            <input
+                                                                                    type='hidden' name='lName'
+                                                                                    value='<%= appointment.lName %>'>
+                                                                        </td>
+                                                                        <td style="text-align: center"><%= appointment.tel %>
+                                                                            <input
+                                                                                    type='hidden' name='tel'
+                                                                                    value='<%= appointment.tel %>'></td>
+                                                                        <td style="text-align: center"><%= appointment.service %>
+                                                                            <input
+                                                                                    type='hidden' name='service'
+                                                                                    value='<%= appointment.service %>'>
+                                                                        </td>
+                                                                        <td style="text-align: center"><%= appointment.date %>
+                                                                            <input
+                                                                                    type='hidden' name='date'
+                                                                                    value='<%= appointment.date %>'>
+                                                                        </td>
+                                                                        <td style="text-align: center"><%= appointment.time %>
+                                                                            <input
+                                                                                    type='hidden' name='time'
+                                                                                    value='<%= appointment.time %>'>
+                                                                        </td>
+                                                                        <td class="btnsCell" style="text-align: center">
+                                                                            <button id="<%= appointment._id %>_deleteBtn"
+                                                                                    type="submit"
+                                                                                    class="btn btn-link btn-sm color-400 btn-outline-danger"
+                                                                                    data-bs-toggle="tooltip"
+                                                                                    data-bs-placement="top"
+                                                                                    aria-label="Delete"
+                                                                                    data-bs-original-title="Delete"
+                                                                                    data-original-title="" title=""><i
+                                                                                        class="fa fa-trash"></i>
+                                                                            </button>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <input type="hidden" name="gender"
+                                                                           value="<%= appointment.gender %>">
+                                                                    <input type="hidden" name="appointmentID"
+                                                                           value="<%= appointment._id %>">
+                                                                    <input type="hidden" name="tableName"
+                                                                           value="new appointments">
+                                                                </form>
+                                                            <% }) %>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-12 col-md-5"></div>
+                                                    <div class="col-sm-12 col-md-7"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-5"></div>
+                                        <div class="col-sm-12 col-md-7"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <!-- invoices: all -->
+                            <div class="card fieldset border border-muted">
+                                <span style="background-color: forestgreen !important; color: white !important; border-radius: 5px"
+                                      class="fieldset-tile text-muted bg-body"><%= translation.approved_appointments %></span>
+                                <div id="invoice_list_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-6"></div>
+                                        <div class="col-sm-12 col-md-6"></div>
+                                    </div>
+                                    <div class="row dt-row">
+                                        <div class="col-sm-12">
+                                            <div id="invoice_list_wrapper"
+                                                 class="dataTables_wrapper dt-bootstrap5 no-footer">
+                                                <div class="row">
+                                                    <div class="col-sm-12 col-md-6"></div>
+                                                    <div class="col-sm-12 col-md-6"></div>
+                                                </div>
+                                                <div class="row dt-row">
+                                                    <div class="col-sm-12">
+                                                        <table id="example3" class="display table table-striped m-b-0">
+                                                            <thead>
+                                                            <tr>
+                                                                <th class="sorting sorting_asc" tabindex="0"
+                                                                    aria-controls="myAllDoctor"
+                                                                    rowspan="1" colspan="1"
+                                                                    style="width: 60px; text-align: center;"
+                                                                    aria-sort="ascending"
+                                                                    aria-label="#: activate to sort column descending"><%= translation.id_number %>
+                                                                </th>
+                                                                <th class="sorting" tabindex="0"
+                                                                    aria-controls="myAllDoctor" rowspan="1"
+                                                                    colspan="1"
+                                                                    style="width: 196.2px; text-align: center;"
+                                                                    aria-label="Doctor: activate to sort column ascending"><%= translation.first_name %>
+                                                                </th>
+                                                                <th class="sorting" tabindex="0"
+                                                                    aria-controls="myAllDoctor" rowspan="1"
+                                                                    colspan="1"
+                                                                    style="width: 139.2px; text-align: center"
+                                                                    aria-label="Specialist: activate to sort column ascending"><%= translation.last_name %>
+                                                                </th>
+                                                                <th class="sorting" tabindex="0"
+                                                                    aria-controls="myAllDoctor" rowspan="1"
+                                                                    colspan="1"
+                                                                    style="width: 123.2px; text-align: center"
+                                                                    aria-label="Schedule: activate to sort column ascending"><%= translation.tel %>
+                                                                </th>
+                                                                <th class="sorting" tabindex="0"
+                                                                    aria-controls="myAllDoctor" rowspan="1"
+                                                                    colspan="1"
+                                                                    style="width: 93.2px; text-align: center"
+                                                                    aria-label="Progress: activate to sort column ascending"><%= translation.disease %>
+                                                                </th>
+                                                                <th class="sorting" tabindex="0"
+                                                                    aria-controls="myAllDoctor" rowspan="1"
+                                                                    colspan="1"
+                                                                    style="width: 106.2px; text-align: center"
+                                                                    aria-label="Date Join: activate to sort column ascending"><%= translation.date %>
+                                                                </th>
+                                                                <th class="sorting" tabindex="0"
+                                                                    aria-controls="myAllDoctor" rowspan="1"
+                                                                    colspan="1"
+                                                                    style="width: 88.2px; text-align: center"
+                                                                    aria-label="Status: activate to sort column ascending"><%= translation.appointment_hour %>
+                                                                </th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            <% approvedAppointments.forEach(function (appointment) { %>
+                                                                <tr id="appointment_<%= appointment._id %>">
+
+                                                                    <td style="text-align: center"><%= appointment.idNumber %>
+                                                                        <input
+                                                                                type='hidden' name='idNumber'
+                                                                                value='<%= appointment.idNumber %>'>
+                                                                    </td>
+                                                                    <td style="text-align: center"><%= appointment.fName %>
+                                                                        <input
+                                                                                type='hidden' name='fName'
+                                                                                value='<%= appointment.fName %>'></td>
+                                                                    <td style="text-align: center"><%= appointment.lName %>
+                                                                        <input
+                                                                                type='hidden' name='lName'
+                                                                                value='<%= appointment.lName %>'></td>
+                                                                    <td style="text-align: center"><%= appointment.tel %>
+                                                                        <input
+                                                                                type='hidden' name='tel'
+                                                                                value='<%= appointment.tel %>'></td>
+                                                                    <td style="text-align: center"><%= appointment.service %>
+                                                                        <input
+                                                                                type='hidden' name='service'
+                                                                                value='<%= appointment.service %>'></td>
+                                                                    <td style="text-align: center"><%= appointment.date %>
+                                                                        <input
+                                                                                type='hidden' name='date'
+                                                                                value='<%= appointment.date %>'></td>
+                                                                    <td style="text-align: center"><%= appointment.time %>
+                                                                        <input
+                                                                                type='hidden' name='time'
+                                                                                value='<%= appointment.time %>'></td>
+                                                                </tr>
+                                                                <input type="hidden" name="gender"
+                                                                       value="<%= appointment.gender %>">
+                                                                <input type="hidden" name="appointmentID"
+                                                                       value="<%= appointment._id %>">
+                                                                <input type="hidden" name="tableName"
+                                                                       value="new appointments">
+
+                                                            <% }) %>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-12 col-md-5"></div>
+                                                    <div class="col-sm-12 col-md-7"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-5"></div>
+                                        <div class="col-sm-12 col-md-7"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <!-- invoices: all -->
+                            <div class="card fieldset border border-muted">
+                                <span style="background-color: red !important; color: white !important; border-radius: 5px"
+                                      class="fieldset-tile text-muted bg-body"><%= translation.canceled_appointments %></span>
+                                <div id="invoice_list_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-6"></div>
+                                        <div class="col-sm-12 col-md-6"></div>
+                                    </div>
+                                    <div class="row dt-row">
+                                        <div class="col-sm-12">
+                                            <div id="invoice_list_wrapper"
+                                                 class="dataTables_wrapper dt-bootstrap5 no-footer">
+                                                <div class="row">
+                                                    <div class="col-sm-12 col-md-6"></div>
+                                                    <div class="col-sm-12 col-md-6"></div>
+                                                </div>
+                                                <div class="row dt-row">
+                                                    <div class="col-sm-12">
+                                                        <table id="example3" class="display table table-striped m-b-0">
+                                                            <thead>
+                                                            <tr>
+                                                                <th class="sorting sorting_asc" tabindex="0"
+                                                                    aria-controls="myAllDoctor"
+                                                                    rowspan="1" colspan="1"
+                                                                    style="width: 60px; text-align: center;"
+                                                                    aria-sort="ascending"
+                                                                    aria-label="#: activate to sort column descending"><%= translation.id_number %>
+                                                                </th>
+                                                                <th class="sorting" tabindex="0"
+                                                                    aria-controls="myAllDoctor" rowspan="1"
+                                                                    colspan="1"
+                                                                    style="width: 196.2px; text-align: center;"
+                                                                    aria-label="Doctor: activate to sort column ascending"><%= translation.first_name %>
+                                                                </th>
+                                                                <th class="sorting" tabindex="0"
+                                                                    aria-controls="myAllDoctor" rowspan="1"
+                                                                    colspan="1"
+                                                                    style="width: 139.2px; text-align: center"
+                                                                    aria-label="Specialist: activate to sort column ascending"><%= translation.last_name %>
+                                                                </th>
+                                                                <th class="sorting" tabindex="0"
+                                                                    aria-controls="myAllDoctor" rowspan="1"
+                                                                    colspan="1"
+                                                                    style="width: 123.2px; text-align: center"
+                                                                    aria-label="Schedule: activate to sort column ascending"><%= translation.tel %>
+                                                                </th>
+                                                                <th class="sorting" tabindex="0"
+                                                                    aria-controls="myAllDoctor" rowspan="1"
+                                                                    colspan="1"
+                                                                    style="width: 93.2px; text-align: center"
+                                                                    aria-label="Progress: activate to sort column ascending"><%= translation.disease %>
+                                                                </th>
+                                                                <th class="sorting" tabindex="0"
+                                                                    aria-controls="myAllDoctor" rowspan="1"
+                                                                    colspan="1"
+                                                                    style="width: 106.2px; text-align: center"
+                                                                    aria-label="Date Join: activate to sort column ascending"><%= translation.date %>
+                                                                </th>
+                                                                <th class="sorting" tabindex="0"
+                                                                    aria-controls="myAllDoctor" rowspan="1"
+                                                                    colspan="1"
+                                                                    style="width: 88.2px; text-align: center"
+                                                                    aria-label="Status: activate to sort column ascending"><%= translation.appointment_hour %>
+                                                                </th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            <% deletedAppointments.forEach(function (appointment) { %>
+                                                                <tr id="appointment_<%= appointment._id %>">
+
+                                                                    <td style="text-align: center"><%= appointment.idNumber %>
+                                                                        <input
+                                                                                type='hidden' name='idNumber'
+                                                                                value='<%= appointment.idNumber %>'>
+                                                                    </td>
+                                                                    <td style="text-align: center"><%= appointment.fName %>
+                                                                        <input
+                                                                                type='hidden' name='fName'
+                                                                                value='<%= appointment.fName %>'></td>
+                                                                    <td style="text-align: center"><%= appointment.lName %>
+                                                                        <input
+                                                                                type='hidden' name='lName'
+                                                                                value='<%= appointment.lName %>'></td>
+                                                                    <td style="text-align: center"><%= appointment.tel %>
+                                                                        <input
+                                                                                type='hidden' name='tel'
+                                                                                value='<%= appointment.tel %>'></td>
+                                                                    <td style="text-align: center"><%= appointment.service %>
+                                                                        <input
+                                                                                type='hidden' name='service'
+                                                                                value='<%= appointment.service %>'></td>
+                                                                    <td style="text-align: center"><%= appointment.date %>
+                                                                        <input
+                                                                                type='hidden' name='date'
+                                                                                value='<%= appointment.date %>'></td>
+                                                                    <td style="text-align: center"><%= appointment.time %>
+                                                                        <input
+                                                                                type='hidden' name='time'
+                                                                                value='<%= appointment.time %>'></td>
+                                                                </tr>
+                                                                <input type="hidden" name="gender"
+                                                                       value="<%= appointment.gender %>">
+                                                                <input type="hidden" name="appointmentID"
+                                                                       value="<%= appointment._id %>">
+                                                                <input type="hidden" name="tableName"
+                                                                       value="new appointments">
+
+                                                            <% }) %>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-12 col-md-5"></div>
+                                                    <div class="col-sm-12 col-md-7"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-5"></div>
+                                        <div class="col-sm-12 col-md-7"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="tab-pane fade card-body" id="Create-Invoice" role="tabpanel">
+                        <form action="/patients/<%= patient._id %>/invoices" method="post">
+                            <div class="container-fluid">
+                                <!-- Create invoice -->
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <div class="card print_invoice">
+                                            <div class="card-header border-bottom fs-4">
+                                                <h5 class="card-title mb-0"><%= translation.invoice %></h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="card p-3">
+                                                    <div class="border-bottom pb-2">
+                    <textarea class="form-control address"><%= translation.from %>:
+<%= locals.doctor ? locals.doctor.fName : '' %> <%= locals.doctor ? locals.doctor.lName : '' %>
+<%= locals.doctor ? locals.doctor.address.city : '' %> <%= locals.doctor ? locals.doctor.address.state : '' %>
+<%= locals.doctor ? locals.doctor.address.zipCode : '' %> <%= locals.doctor ? locals.doctor.address.street : '' %>, <%= locals.doctor ? locals.doctor.address.country : '' %>
+<%= locals.doctor ? locals.doctor.email : '' %>
+<%= locals.doctor ? locals.doctor.tel : '' %></textarea>
+
+                                                    </div>
+                                                    <div style="clear:both"></div>
+                                                    <div style="display: flex; align-content: center; justify-content: space-between"
+                                                         class="customer mt-12">
+                                                        <table class="">
+                                                            <tbody>
+                                                            <tr>
+                                                                <td class="meta-head"><%= translation.to %>:</td>
+                                                                <td><%= patient ? patient.fName : '' %> <%= patient ? patient.lName : '' %>
+                                                                    <br>
+                                                                    <%= patient ? patient.email : '' %>
+                                                                </td>
+                                                            </tr>
+                                                            </tbody>
+                                                        </table>
+
+                                                        <input type="hidden" name="email"
+                                                               value="<%= patient ? patient.email : '' %>">
+                                                        <input type="hidden" name="fullName"
+                                                               value="<%= patient ? patient.fName : '' %> <%= patient ? patient.lName : '' %>">
+                                                        <table class="meta">
+                                                            <tbody>
+                                                            <tr>
+                                                                <td class="meta-head"><%= translation.date %></td>
+                                                                <td><textarea class="form-control"
+                                                                              id="createInvoiceDate"
+                                                                              name="invoiceDate"></textarea>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="meta-head"><%= translation.amount_due %></td>
+                                                                <td>
+                                                                    <div class="due"></div>
+                                                                </td>
+                                                            </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <div style="clear:both"></div>
+                                                    <table class="items">
+                                                        <tbody>
+                                                        <tr>
+                                                            <th><%= translation.item %></th>
+                                                            <th><%= translation.description %></th>
+                                                            <th style="width: 140px;"><%= translation.unit_cost %></th>
+                                                            <th style="width: 70px;"><%= translation.quantity %></th>
+                                                            <th style="width: 140px;"><%= translation.price %></th>
+                                                        </tr>
+                                                        <tr class="item-row">
+
+                                                        </tr>
+                                                        <tr id="hiderow">
+                                                            <td colspan="5"><a id="addrow" href="javascript:;"
+                                                                               title="Add a row"><%= translation.add_a_row %></a>
+                                                            </td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td colspan="2" class="blank"></td>
+                                                            <td colspan="2"
+                                                                class="total-line"><%= translation.total %></td>
+                                                            <td class="total-value">
+                                                                <div id="total"><input type="hidden" name="total"
+                                                                                       id="total-input"></div>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="2" class="blank"></td>
+                                                            <td colspan="2"
+                                                                class="total-line"><%= translation.amount_paid %></td>
+                                                            <td class="total-value"><input type="number" id="paid"
+                                                                                           name="amountPaid">
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="2" class="blank"></td>
+                                                            <td colspan="2"
+                                                                class="total-line balance"><%= translation.remaining %></td>
+                                                            <td class="total-value balance">
+                                                                <div class="due"><input type="hidden" name="due"
+                                                                                        id="due-input"></div>
+                                                            </td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <div style="clear:both"></div>
+                                                    <div class="footer-note mt-5">
+                                                        <h5><%= translation.terms %></h5>
+                                                        <textarea name="terms"
+                                                                  class="form-control bg-light"><%= translation.net_30_days %></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 text-center text-md-end">
+                                        <button type="submit" class="btn btn-lg btn-primary"><i
+                                                    class="fa fa-print me-2"></i><%= translation.save_invoice %>
+                                        </button>
+                                    </div>
+                                </div> <!-- .row end -->
+                                <!-- Plugin Js -->
+                                <script src="/bundles/invoice.bundle.js"></script>
+                            </div>
+                        </form>
+                    </div>
+
+
+                    <!-- Tab: Billings -->
+                    <div class="tab-pane fade card-body" id="Billings-Patient" role="tabpanel">
+                        <div class="col-12">
+                            <!-- invoices: all -->
+                            <div class="card fieldset border border-muted">
+                                <span class="fieldset-tile text-muted bg-body"><%= translation.recent_invoices %></span>
+                                <div id="invoice_list_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-6"></div>
+                                        <div class="col-sm-12 col-md-6"></div>
+                                    </div>
+                                    <div class="row dt-row">
+                                        <div class="col-sm-12">
+                                            <div id="invoice_list_wrapper"
+                                                 class="dataTables_wrapper dt-bootstrap5 no-footer">
+                                                <div class="row">
+                                                    <div class="col-sm-12 col-md-6"></div>
+                                                    <div class="col-sm-12 col-md-6"></div>
+                                                </div>
+                                                <div class="row dt-row">
+                                                    <div class="col-sm-12">
+                                                        <table id="invoice_list"
+                                                               class="table card-table align-middle mb-0 nowrap dataTable no-footer dtr-inline"
+                                                               style="width: 1147px;">
+                                                            <thead>
+
+                                                            <th class="sorting" tabindex="0"
+                                                                aria-controls="invoice_list" rowspan="1" colspan="1"
+                                                                style="width: 83.2px;"
+                                                                aria-label="Invoice: activate to sort column ascending">
+                                                                <%= translation.invoice %>
+                                                            </th>
+                                                            <th class="sorting" tabindex="0"
+                                                                aria-controls="invoice_list" rowspan="1" colspan="1"
+                                                                style="width: 200.2px;"
+                                                                aria-label="Name: activate to sort column ascending">
+                                                                <%= translation.name %>
+                                                            </th>
+                                                            <th class="sorting" tabindex="0"
+                                                                aria-controls="invoice_list" rowspan="1" colspan="1"
+                                                                style="width: 108.2px;"
+                                                                aria-label="Total: activate to sort column ascending">
+                                                                <%= translation.total %>
+                                                            </th>
+                                                            <th class="sorting" tabindex="0"
+                                                                aria-controls="invoice_list" rowspan="1" colspan="1"
+                                                                style="width: 108.2px;"
+                                                                aria-label="Total: activate to sort column ascending">
+                                                                <%= translation.paid %>
+                                                            </th>
+                                                            <th class="sorting" tabindex="0"
+                                                                aria-controls="invoice_list" rowspan="1" colspan="1"
+                                                                style="width: 108.2px;"
+                                                                aria-label="Total: activate to sort column ascending">
+                                                                <%= translation.remaining %>
+                                                            </th>
+                                                            <th class="sorting" tabindex="0"
+                                                                aria-controls="invoice_list" rowspan="1" colspan="1"
+                                                                style="width: 107.2px;"
+                                                                aria-label="Date: activate to sort column ascending">
+                                                                <%= translation.date %>
+                                                            </th>
+                                                            <th class="sorting" tabindex="0"
+                                                                aria-controls="invoice_list" rowspan="1" colspan="1"
+                                                                style="width: 176.2px;"
+                                                                aria-label="Action: activate to sort column ascending">
+                                                                <%= translation.action %>
+                                                            </th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            <% patient.invoices.forEach(function (invoice, index) { %>
+                                                                <tr class="row-selectable odd invRowRmv_<%= invoice._id %>"
+                                                                    id="invoice-row-<%= index %>">
+                                                                    <form class="deleteAndUpdateForm"
+                                                                          id="<%= invoice._id %>">
+                                                                        <input type="hidden" name="patientID"
+                                                                               value="<%= patient._id %>">
+                                                                        <input type="hidden" name="invoiceID"
+                                                                               value="<%= invoice._id %>">
+                                                                        <input type="hidden" name="totalPrice"
+                                                                               value="<%= invoice.totalPrice %>">
+                                                                        <input type="hidden" name="amountPaid"
+                                                                               value="<%= invoice.amountPaid %>">
+                                                                        <input type="hidden" name="due"
+                                                                               value="<%= invoice.due %>">
+                                                                        <input type="hidden" name="invoiceDate"
+                                                                               value="<%= invoice.invoiceDate %>">
+                                                                        <input type="hidden" name="invoice-Id"
+                                                                               value="<%= invoice.invoiceId %>">
+                                                                        <input type="hidden" name="invoice-status"
+                                                                               value="<%= invoice.status %>">
+                                                                        <input type="hidden" name="items"
+                                                                               value="<%= invoice.items %>">
+                                                                        <td class="fw-bold"><%= invoice.invoiceId %></td>
+                                                                        <td>
+                                                                            <div class="d-flex align-items-center">
+                                                                                <img src="/assets/img/<%= patient.gender %>.png"
+                                                                                     class="rounded-circle sm avatar"
+                                                                                     alt="">
+                                                                                <div class="ms-2 mb-0"><%= patient.fName %> <%= patient.lName %></div>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td class="fw-bold"><%= invoice.totalPrice %></td>
+                                                                        <td class="fw-bold"><%= invoice.amountPaid %></td>
+                                                                        <td class="fw-bold"><%= invoice.due %></td>
+                                                                        <td class="fw-bold"><%= invoice.invoiceDate %></td>
+                                                                        <td>
+
+                                                                            <button type="button"
+                                                                                    class="btn btn-link btn-sm color-400 btn-outline-primary"
+                                                                                    data-bs-toggle="modal"
+                                                                                    data-bs-target="#invoice_detail"
+                                                                                    onclick="handleInvoice(<%= index %>)">
+                                                                                <i class="fa fa-envelope"></i></button>
+                                                                            <button type="button"
+                                                                                    class="btn btn-link btn-sm color-400 btn-outline-warning"
+                                                                                    data-bs-toggle="modal"
+                                                                                    data-bs-target="#invoice_detail"
+                                                                                    onclick="handleInvoice(<%= index %>)">
+                                                                                <i class="fa fa-download"></i></button>
+                                                                            <button type="button"
+                                                                                    class="btn btn-link btn-sm color-400 btn-outline-danger"
+                                                                                    data-bs-toggle="tooltip"
+                                                                                    data-bs-placement="top"
+                                                                                    aria-label="Delete"
+                                                                                    data-bs-original-title="Delete"
+                                                                                    data-original-title="" title=""
+                                                                                    onclick="deleteInvoice('<%= invoice.invoiceId %>', '<%= invoice._id %>')">
+                                                                                <i
+                                                                                        class="fa fa-trash"></i>
+                                                                            </button>
+                                                                        </td>
+                                                                    </form>
+                                                                </tr>
+                                                            <% }) %>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-12 col-md-5"></div>
+                                                    <div class="col-sm-12 col-md-7"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-5"></div>
+                                        <div class="col-sm-12 col-md-7"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Plugin Js -->
+                            <script src="../assets/js/bundle/dataTables.bundle.js"></script>
+                            <!-- Jquery Page Js -->
+                            <script>
+                                $(document).ready(function () {
+                                    $('#invoice_list').addClass('nowrap').dataTable({
+                                        responsive: true,
+                                        searching: false,
+                                        paging: false,
+                                        ordering: true,
+                                        info: false,
+                                    });
+                                    $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+                                        $($.fn.dataTable.tables(true)).DataTable().columns.adjust().responsive.recalc();
+                                    });
+                                });
+                            </script>
+                            <!-- Modal: invoice send -->
+                            <!-- <button class="btn btn-primary px-4 text-uppercase" data-bs-toggle="modal" data-bs-target="#invoice_send" type="button">invoice send</button> -->
+                            <div class="modal fade" id="invoice_send" tabindex="-1" style="display: none;"
+                                 aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-scrollable">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title"><%= translation.invoice %> #RA0011</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body custom_scroll">
+                                            <table class="card p-2">
+                                                <tbody>
+                                                <tr>
+                                                    <td></td>
+                                                    <td style="text-align: center; width: 100%;">
+                                                        <table class="table table-borderless mb-0" width="100%"
+                                                               cellpadding="0" cellspacing="0">
+                                                            <tbody>
+                                                            <tr>
+                                                                <td style="text-align: center;">
+                                                                    <h2 style="margin-bottom: 0;">$33.98 Paid</h2>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="padding-bottom:30px; padding-top: 10px; text-align: center;">
+                                                                    <h4 style="margin-bottom: 0;">Thanks for using TTM
+                                                                        Inc.</h4>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="padding: 20px 0;">
+                                                                    <table width="100%">
+                                                                        <tbody>
+                                                                        <tr>
+                                                                            <td> Attn: <strong>Daniel Marek</strong>
+                                                                                43-190 Mikolow, Poland<br> Email:
+                                                                                marek@daniel.com<br> Phone: +48 123 456
+                                                                                789<br>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <table class="table table-borderless table-striped mb-0"
+                                                                                       cellpadding="0" cellspacing="0">
+                                                                                    <tbody>
+                                                                                    <tr>
+                                                                                        <td style="text-align: left;">
+                                                                                            Extended License
+                                                                                        </td>
+                                                                                        <td style="text-align: right;">
+                                                                                            $19.99
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                    <tr>
+                                                                                        <td style="text-align: left;">1
+                                                                                            year subcription
+                                                                                        </td>
+                                                                                        <td style="text-align: right;">
+                                                                                            $9.99
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                    <tr>
+                                                                                        <td style="text-align: left;">
+                                                                                            Instalation and
+                                                                                            Customization
+                                                                                        </td>
+                                                                                        <td style="text-align: right;">
+                                                                                            $4.00
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                    <tr>
+                                                                                        <td style="text-align: right;"
+                                                                                            width="80%">
+                                                                                            <strong>Total</strong></td>
+                                                                                        <td style="text-align: right;">
+                                                                                            $33.98
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </td>
+                                                                        </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="padding: 10px 0; text-align: center;">
+                                                                    <a href="#">View in browser</a>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="padding: 0; text-align: center;"> TTM Inc. 70
+                                                                    Bowman St. South Windsor, CT 06074
+                                                                </td>
+                                                            </tr>
+                                                            </tbody>
+                                                        </table>
+                                                        <table width="100%"
+                                                               style="text-align: center; margin-top: 40px;">
+                                                            <tbody>
+                                                            <tr>
+                                                                <td class="aligncenter content-block">Questions? Email
+                                                                    <a href="mailto:">info@thememakker.com</a></td>
+                                                            </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </td>
+                                                    <td></td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-primary">Send Email</button>
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                Close
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <!-- Modal: invoice detail -->
+                            <!-- <button class="btn btn-primary px-4 text-uppercase" data-bs-toggle="modal" data-bs-target="#invoice_detail" type="button">invoice detail</button> -->
+                            <div class="modal fade" id="invoice_detail" tabindex="-1" style="display: none;"
+                                 aria-hidden="true">
+
+                                <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                                    <form id="generate-pdf" method="post">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 id="invID" class="modal-title"></h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                            </div>
+                                            <div id="invoice_detail_by_email" class="modal-body custom_scroll">
+                                                <table id="invTable" class="table table-borderless mb-0">
+                                                    <input type="hidden" name="invoID" id="sentInvoice">
+                                                    <input type="hidden" name="patientID" value="<%= patient._id %>">
+                                                    <tbody>
+                                                    <tr>
+                                                        <td id="invDate"></td>
+                                                        <td class="text-end">
+                                                            <span id="invStatus" class="text-danger"></span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <div><%= translation.from %></div>
+                                                            <div class="fs-6 fw-bold mb-1">
+                                                                <%= translation.dr %> <%= doctor.fName %> <%= doctor.lName %></div>
+                                                            <div><%= doctor.address.state %> <%= doctor.address.street %></div>
+                                                            <div><%= doctor.address.zipCode %>
+                                                                , <%= doctor.address.city %> <%= doctor.address.country %></div>
+                                                            <div><%= translation.email %>: <%= doctor.email %></div>
+                                                            <div><%= translation.tel %>: <%= doctor.tel %></div>
+                                                        </td>
+                                                        <td class="text-end">
+                                                            <div><%= translation.to %></div>
+                                                            <div class="fs-6 fw-bold mb-1">
+                                                                <% if (patient && patient.fName && patient.lName) {
+                                                                    const maskedFName = patient.fName.slice(0, 2) + patient.fName.slice(2).replace(/./g, '*');
+                                                                    const maskedLName = patient.lName.slice(0, 2) + patient.lName.slice(2).replace(/./g, '*');
+                                                                    const maskedName = `${maskedFName} ${maskedLName}`;
+                                                                %>
+                                                                <div><%= translation.name %>: <%= maskedName %></div>
+                                                                <% } %>
+                                                            </div>
+                                                            <% if (patient.email) { %>
+                                                                <div><%= translation.email %>:
+                                                                    <% const [localPart, domainPart] = patient.email.split('@');
+                                                                        const maskedLocalPart = localPart.slice(0, 2) + localPart.slice(2).replace(/./g, '*');
+                                                                        const maskedEmail = `${maskedLocalPart}@${domainPart}`;
+                                                                    %>
+                                                                    <%= maskedEmail %>
+                                                                </div>
+                                                            <% } %>
+                                                            <% if (patient.tel) { %>
+                                                                <div><%= translation.tel %>:
+                                                                    <!-- Telephone number format: 05XXXXXXX86 -->
+                                                                    <% const maskedTel = `05${patient.tel.slice(2, 11).replace(/\d/g, '*')}${patient.tel.slice(-2)}`;
+                                                                    %>
+                                                                    <%= maskedTel %>
+                                                                </div>
+                                                            <% } %>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2">
+                                                            <table id="invItemsTable"
+                                                                   class="table table-borderless table-striped mb-0">
+                                                                <thead>
+                                                                <tr>
+                                                                    <th style="text-align: center" class="text-center">
+                                                                        #
+                                                                    </th>
+                                                                    <th style="text-align: center"><%= translation.item %></th>
+                                                                    <th style="text-align: center"><%= translation.description %></th>
+                                                                    <th style="text-align: center"
+                                                                        class=""><%= translation.unit_cost %>
+                                                                    </th>
+                                                                    <th style="text-align: center" class="text-center">
+                                                                        <%= translation.quantity %>
+                                                                    </th>
+                                                                    <th style="text-align: center" class="text-end">
+                                                                        <%= translation.total %>
+                                                                    </th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                <tr>
+                                                                    <td colspan="3" style="width: 700px;">
+                                                                        <h6><%= translation.terms_conditions %></h6>
+                                                                        <p id="termsAndCondition" class="text-muted">You
+                                                                            know, being a test
+                                                                            pilot
+                                                                            isn't always the healthiest business in the
+                                                                            world. We predict too much for the next year
+                                                                            and
+                                                                            yet far too little for the next 10.</p>
+                                                                    </td>
+                                                                    <td colspan="3" style="width: 50px">
+                                                                        <table class="table table-borderless mb-0 totalTable">
+                                                                            <tbody>
+                                                                            <tr>
+                                                                                <td>
+                                                                                    <strong><%= translation.total %></strong>
+                                                                                </td>
+                                                                                <td class="text-end">
+                                                                                    <strong id="invTotal">$7.477,36</strong>
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>
+                                                                                    <strong><%= translation.amount_paid %></strong>
+                                                                                </td>
+                                                                                <td id="amntPaid" class="text-end"></td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>
+                                                                                    <strong><%= translation.balance_due %></strong>
+                                                                                </td>
+                                                                                <td class="text-end">
+                                                                                    <strong id="balanceDue"></strong>
+                                                                                </td>
+                                                                            </tr>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </td>
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-primary" onclick="window.print()">
+                                                    <i
+                                                            class="fa fa-print me-2"></i><%= translation.print %>
+                                                </button>
+                                                <button type="button" class="btn btn-primary send-pdf-button">
+                                                    <i
+                                                            class="fa fa fa-envelope me-2"></i><%= translation.send_email %>
+                                                </button>
+                                                <button id="generate-pdf-button" type="button" class="btn btn-primary"
+                                                        onclick="downloadInvoice()">
+                                                    <i
+                                                            class="fa fa-file-pdf-o me-2"></i><%= translation.download_pdf %>
+                                                </button>
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                    <%= translation.close %>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- .row end -->
+    </div>
+</div>
+
+<div class="modal fade" id="reasonOfTheVisit" tabindex="-1" aria-modal="true" role="dialog" style="display: block;">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content text-start">
+            <div class="modal-body custom_scroll p-lg-5">
+                <button type="button" class="btn-close position-absolute top-0 end-0 mt-3 me-3" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                <h4 style="margin-bottom: 20px" class="modal-title"><%= translation.the_reason_of_this_visit %></h4>
+                <!--                <p class="text-muted">All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary</p>-->
+                <div class="card bg-body p-md-4 p-2 mb-2">
+                    <form id="visitForm" action="/patients/<%= patient._id %>/lastvisit" method="post">
+                        <div style="margin-top: 20px" class="input-group">
+                            <input id="reasonNote" type="text" class="form-control" name="note"
+                                   placeholder="<%= translation.note %>">
+                        </div>
+                        <div style="margin-top: 20px" class="input-group ">
+                            <div class="btn-group-vertical" role="group"
+                                 aria-label="Vertical radio toggle button group">
+                                <input type="radio" class="btn-check" name="visitReason" value="Routine check-up"
+                                       id="Routinecheck-up-radio1" autocomplete="off">
+                                <label class="btn btn-outline-danger"
+                                       for="Routinecheck-up-radio1"><%= translation.routine_check_up %></label>
+                                <input type="radio" class="btn-check" name="visitReason" value="Follow-up visit"
+                                       id="Follow-upvisit-radio2" autocomplete="off">
+                                <label class="btn btn-outline-danger"
+                                       for="Follow-upvisit-radio2"><%= translation.follow_up_visit %></label>
+                                <input type="radio" class="btn-check" name="visitReason" value="X-ray bringing"
+                                       id="X-raybringing-radio3" autocomplete="off">
+                                <label class="btn btn-outline-danger"
+                                       for="X-raybringing-radio3"><%= translation.x_ray_bringing %></label>
+                            </div>
+                            <div class="btn-group-vertical" role="group"
+                                 aria-label="Vertical radio toggle button group">
+
+                                <input type="text" class="form-control" name="date"
+                                       placeholder="<%= translation.date %>"
+                                       aria-label="Input group example" aria-describedby="btnGroupAddon"
+                                       value="<%= (new Date()).toISOString().split('T')[0] %>"
+                                       style="text-align: right;">
+                                <input type="text" class="form-control" name="time"
+                                       placeholder="<%= translation.time %>"
+                                       aria-label="Input group example" aria-describedby="btnGroupAddon"
+                                       id="formattedTime" style="text-align: right;">
+
+
+                            </div>
+                        </div>
+                        <div style="margin-top: 20px" class="input-group">
+
+                            <input id="otherReasonInput" type="text" class="form-control" name="visitReason"
+                                   placeholder="<%= translation.other %>"
+                                   aria-label="Input group example" aria-describedby="btnGroupAddon">
+                            <button id="otherButton" type="button"
+                                    class="btn btn-light-success"><%= translation.send %></button>
+
+                            <input id="theResultInput" type="hidden" class="form-control" name="reason">
+                        </div>
+                    </form>
+                </div>
+
+                <ul class="timeline-activity list-unstyled mb-0">
+                    <% patient.lastVisit.forEach((visit) => { %>
+                        <li class="activity px-3 py-2 mb-1" data-date="<%= visit.date %>">
+                            <div class="fw-bold small d-flex justify-content-between align-items-center"><%= visit.reason %>
+                                <span
+                                        class="badge bg-warning"><%= visit.time %></span></div>
+                            <div>
+                                <small class="text-muted"><%= visit.note %></small>
+                            </div>
+                        </li>
+                    <% }) %>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    // Get all the outer radio buttons
+    var outerRadios = document.getElementsByName('outerGroup');
+
+    // Add change event listeners to the outer radio buttons
+    for (var i = 0; i < outerRadios.length; i++) {
+        outerRadios[i].addEventListener('change', function () {
+            // If an outer radio button is selected, unselect the nested radio buttons in the other group
+            var nestedRadios = document.getElementsByClassName('nested-group');
+            for (var j = 0; j < nestedRadios.length; j++) {
+                nestedRadios[j].checked = false;
+            }
+        });
+    }
+
+
+    // Get all radio button labels
+    const radioLabels = document.querySelectorAll('label.radio-inline');
+
+    // Add click event listener to each label
+    radioLabels.forEach(label => {
+        label.addEventListener('click', () => {
+            // Get the associated input element and check it
+            const input = label.previousElementSibling;
+            input.checked = true;
+        });
+    });
+
+
+    // Get all checkbox labels
+    const checkboxLabels = document.querySelectorAll('label.checkbox-inline');
+
+    // Add click event listener to each label
+    checkboxLabels.forEach(label => {
+        label.addEventListener('click', () => {
+            // Get the associated input element and toggle its checked state
+            const input = label.previousElementSibling;
+            input.checked = !input.checked;
+        });
+    });
+
+
+    const formInputs = document.querySelectorAll('#patientProfileForm input[type="text"], #patientProfileForm textarea');
+
+    formInputs.forEach((input) => {
+        if (input.value) {
+            input.classList.add('bgc');
+        }
+    });
+
+    formInputs.forEach((input) => {
+        input.addEventListener('input', () => {
+            if (input.value) {
+                input.classList.add('bgc');
+            } else {
+                input.classList.remove('bgc');
+            }
+        });
+    });
+
+
+</script>
+
+<script>
+    <% const foundAppointmentsJSON = JSON.stringify(foundAppointments); %>
+    const foundAppointments = JSON.parse('<%- foundAppointmentsJSON %>');
+</script>
+
+<script>
+    // Wait for the window to load
+    window.addEventListener('load', function () {
+        // Show the popup
+        $('#reasonOfTheVisit').modal('show');
+    });
+</script>
+
+
+<script>
+    // Get the form element
+    const visitForm = document.getElementById('visitForm');
+    // Get all radio buttons
+    const radioButtons = document.querySelectorAll('input[type="radio"][name="visitReason"]');
+    const otherButton = document.getElementById('otherButton');
+    const otherInput = document.getElementById('otherReasonInput');
+    const reasonInput = document.getElementById('theResultInput');
+
+    // Add change event listener to radio buttons
+    radioButtons.forEach((radioButton) => {
+        radioButton.addEventListener('change', (event) => {
+            // Set the value of the reason input to the selected radio button value
+            reasonInput.value = radioButton.value;
+            event.preventDefault();
+            submitForm();
+
+        });
+    });
+
+    otherButton.addEventListener('click', (event) => {
+        // Set the value of the reason input to the value of the text input
+        reasonInput.value = otherInput.value;
+        // Prevent the default form submission behavior
+        event.preventDefault();
+        // Submit the form using AJAX or perform any other desired actions
+        submitForm();
+    });
+
+    // Function to submit the form
+    function submitForm() {
+        const formData = new FormData(visitForm);
+
+        fetch(visitForm.action, {
+            method: visitForm.method,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({formData: Object.fromEntries(formData)}),
+        })
+            .then(response => {
+                // Handle the response as needed
+                console.log('Form submitted successfully');
+                $('#reasonOfTheVisit').modal('hide');
+            })
+            .catch(error => {
+                // Handle any errors
+                console.error('Error submitting form:', error);
+                $('#reasonOfTheVisit').modal('hide');
+            });
+    }
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const formattedTimeInput = document.getElementById("formattedTime");
+        formattedTimeInput.value = getFormattedTime();
+    });
+
+    function getFormattedTime() {
+        const currentDate = new Date();
+        const hour = currentDate.getHours();
+        const minutes = currentDate.getMinutes();
+        const dayOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][currentDate.getDay()];
+
+        const formattedTime = `${padZero(hour)}:${padZero(minutes)} - ${dayOfWeek}`;
+        return formattedTime;
+    }
+
+    function padZero(number) {
+        return number.toString().padStart(2, '0');
+    }
+</script>
+
+
+<%- include("partials/footer"); -%>
